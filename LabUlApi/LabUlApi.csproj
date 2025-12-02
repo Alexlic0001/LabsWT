@@ -27,6 +27,6 @@
 
 	<ItemGroup>
 	  <Folder Include="wwwroot\images\" />
-	</ItemGroup>
+	</ItemGroup>///////
 
 </Project>
