@@ -1,0 +1,33 @@
+﻿@model Dish
+
+@{
+    var request = ViewContext.HttpContext.Request;
+    var returnUrl = request.Path + request.QueryString.ToUriComponent();
+}
+
+<div class="col-md-4 mb-4">
+    <div class="card h-100 border-dark">
+        @if (!string.IsNullOrEmpty(Model.Image))
+        {
+            <img class="card-img-top" src="~/@Model.Image" alt="@Model.Name" style="height: 200px; object-fit: cover;">
+        }
+        else
+        {
+            <img class="card-img-top" src="~/Images/default-dish.jpg" alt="No image" style="height: 200px; object-fit: cover;">
+        }
+        <div class="card-body">
+            <h5 class="card-title">@Model.Name</h5>
+            <p class="card-text">@Model.Description</p>
+            <h5><span class="badge bg-secondary">@Model.Price руб</span></h5>
+        </div>
+        <div class="card-footer text-center">
+            <a class="btn btn-outline-primary"
+               asp-action="Add"
+               asp-controller="Cart"
+               asp-route-id="@Model.Id"
+               asp-route-returnurl="@returnUrl">
+                Добавить в корзину <i class="fas fa-cart-shopping"></i>
+            </a>
+        </div>
+    </div>
+</div>

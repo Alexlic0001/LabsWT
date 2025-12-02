@@ -1,0 +1,75 @@
+﻿@model ListModel<Dish>
+
+@{
+    ViewData["Title"] = "Каталог блюд";
+    var request = ViewContext.HttpContext.Request;
+    var returnUrl = request.Path + request.QueryString.ToUriComponent();
+    var categories = ViewData["categories"] as IEnumerable<Category>;
+
+    // Получаем категорию из маршрута вместо query string
+    string? category = request.RouteValues["category"]?.ToString();
+}
+
+<div class="container">
+    <h1 class="m-3">Блюда дня</h1>
+
+    <div class="row">
+        <!-- выбор категории -->
+        <div class="col-2 border-2">
+            <ul class="nav">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">
+                        @ViewData["currentCategory"]
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a class="dropdown-item" asp-controller="Product" asp-route-category=@null>Все</a>
+                        </li>
+                        @if (categories != null)
+                        {
+                            @foreach (var item in categories)
+                            {
+                                <li>
+                                    <a class="dropdown-item" asp-controller="Product" asp-route-category="@item.NormalizedName">
+                                        @item.Name
+                                    </a>
+                                </li>
+                            }
+                        }
+                    </ul>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Блок с карточками товаров  -->
+        @if (Model != null && Model.Items.Any())
+        {
+            <div class="col-10">
+                <div class="row">
+                    @foreach (var item in Model.Items)
+                    {
+                        <partial name="_ProductItemPartial" model="@item" />
+                    }
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="col-10">
+                <h2 class="text-warning">@ViewData["Error"]</h2>
+            </div>
+        }
+    </div>
+
+    <!-- Пагинация -->
+    @if (Model != null && Model.TotalPages > 1)
+    {
+        <div class="row mt-4">
+            <pager page-current="@Model.CurrentPage"
+                   page-total="@Model.TotalPages"
+                   action="Index"
+                   controller="Product"
+                   category="@category"></pager>
+        </div>
+    }
+</div>

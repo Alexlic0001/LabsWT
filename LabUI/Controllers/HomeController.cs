@@ -15,7 +15,8 @@ namespace LabUI.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            _logger.LogInformation($"------> {User.Identity.IsAuthenticated}");
+            return View(_logger);
         }
 
         public IActionResult Privacy()

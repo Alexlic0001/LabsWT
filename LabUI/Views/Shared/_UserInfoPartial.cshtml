@@ -1,0 +1,48 @@
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<AppUser> SignInManager
+
+@if (User.Identity.IsAuthenticated)
+{
+    @await Component.InvokeAsync("Cart")
+    <div class="dropdown ms-4 nav-color">
+        <button class="btn btn-secondary dropdown-toggle"
+                type="button" id="dropdownMenuButton"
+                data-bs-toggle="dropdown"
+                aria-expanded="false">
+            @User.Identity.Name
+            <img src="Image/GetAvatar" width="30"
+                 alt="User" class="rounded nav-color" />
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            <li>
+                <span class="dropdown-item-text">
+                    <img src="Image/GetAvatar"
+                         width="50" alt="User" class="rounded" />
+                    @User.Identity.Name
+                </span>
+            </li>
+            <li><hr class="dropdown-divider"></li>
+            <li>
+                <form id="logoutForm" class="form-inline"
+                      asp-area="identity" asp-page="/account/login">
+                    <button id="logout" type="submit" class="nav-link btn btn-link">
+                        Logout
+                    </button>
+                </form>
+            </li>
+        </ul>
+    </div>
+}
+else
+{
+    <ul>
+    <li class="nav-item">
+            <a class="nav-link text-danger" asp-area="Identity" asp-page="/Account/Register">Register</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link text-success" asp-area="Identity" asp-page="/Account/Login">Login</a>
+    </li>
+    </ul>
+}
+
+
