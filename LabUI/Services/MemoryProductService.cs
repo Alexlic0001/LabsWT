@@ -69,7 +69,9 @@ namespace LabUI.Services
             {
                 categoryId = _categories.Find(c => c.NormalizedName.Equals(categoryNormalizedName))?.Id;
             }
+
             var filteredDishes = _dishes.Where(d => categoryId == null || d.CategoryId.Equals(categoryId)).ToList();
+
             // Получаем размер страницы из конфигурации
             int pageSize = _config.GetValue<int>("ItemsPerPage", 3);
 
@@ -82,9 +84,6 @@ namespace LabUI.Services
                 .Take(pageSize)
                 .ToList();
 
-
-            var data = _dishes.Where(d => categoryId == null || d.CategoryId.Equals(categoryId)).ToList();
-
             var model = new ListModel<Dish>
             {
                 Items = pagedDishes,
@@ -95,7 +94,8 @@ namespace LabUI.Services
 
             var result = new ResponseData<ListModel<Dish>>
             {
-                Data = model
+                Data = model,
+                Success = filteredDishes.Count > 0
             };
 
             if (filteredDishes.Count == 0)

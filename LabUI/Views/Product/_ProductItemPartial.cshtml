@@ -1,0 +1,36 @@
+﻿@model Dish
+
+@{
+    var request = ViewContext.HttpContext.Request;
+    var returnUrl = request.Path + request.QueryString.ToUriComponent();
+}
+
+<div class="col-md-4 mb-4">
+    <div class="card h-100">
+        <!-- Используем ImageTagHelper -->
+        <img img-action="GetImage"
+             img-controller="Image"
+             image-name="@Model.Image"
+             class="card-img-top"
+             alt="@Model.Name"
+             style="height: 200px; object-fit: cover;" />
+        
+        <div class="card-body">
+            <h5 class="card-title">@Model.Name</h5>
+            <p class="card-text">@Model.Description</p>
+            <p class="card-text">
+                <small class="text-muted">@Model.Price.ToString("C")</small>
+            </p>
+        </div>
+        
+        <div class="card-footer text-center">
+            <a class="btn btn-primary"
+               asp-controller="Cart" 
+               asp-action="Add" 
+               asp-route-id="@Model.Id"
+               asp-route-returnUrl="@returnUrl">
+                Добавить в корзину
+            </a>
+        </div>
+    </div>
+</div>

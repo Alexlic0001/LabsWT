@@ -7,16 +7,18 @@ using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Заменяем SQL Server на SQLite
+
+//  SQLite
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
-    ?? "Data Source=app.db"; // значение по умолчанию для SQLite
+    ?? "Data Source=app.db"; //  SQLite
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlite(connectionString)); // Изменено на UseSqlite
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-// Остальной код остается без изменений...
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddSingleton<IUrlHelperFactory, UrlHelperFactory>();
+
 builder.Services.AddTransient<ICategoryService, MemoryCategoryService>();
 
 builder.Services.AddDefaultIdentity<AppUser>(options =>

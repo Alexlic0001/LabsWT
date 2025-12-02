@@ -9,11 +9,11 @@ namespace LabUI.TagHelpers
     [HtmlTargetElement("img", Attributes = "img-action, img-controller")]
     public class ImageTagHelper : TagHelper
     {
-        private IUrlHelperFactory urlHelperFactory;
+        private readonly IUrlHelperFactory _urlHelperFactory;
 
-        public ImageTagHelper(IUrlHelperFactory helperFactory)
+        public ImageTagHelper(IUrlHelperFactory urlHelperFactory)
         {
-            urlHelperFactory = helperFactory;
+            _urlHelperFactory = urlHelperFactory;
         }
 
         [ViewContext]
@@ -22,12 +22,14 @@ namespace LabUI.TagHelpers
 
         public string ImgAction { get; set; }
         public string ImgController { get; set; }
+        public string? ImageName { get; set; } // Добавьте это свойство
 
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
-            var urlHelper = urlHelperFactory.GetUrlHelper(ViewContext);
-            var src = urlHelper.Action(ImgAction, ImgController);
-            output.Attributes.SetAttribute("src", src);
+            var urlHelper = _urlHelperFactory.GetUrlHelper(ViewContext);
+            var imageUrl = urlHelper.Action(ImgAction, ImgController, new { imageName = ImageName });
+
+            output.Attributes.SetAttribute("src", imageUrl);
         }
     }
 }

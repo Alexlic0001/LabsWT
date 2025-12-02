@@ -16,6 +16,36 @@ namespace LabUI.Controllers
             _env = env;
         }
 
+        // ДОБАВЬТЕ ЭТОТ МЕТОД ДЛЯ ТЕГ-ХЕЛПЕРА
+        public IActionResult GetImage(string? imageName)
+        {
+            if (string.IsNullOrEmpty(imageName))
+            {
+                // Возвращаем изображение по умолчанию
+                return GetDefaultImage();
+            }
+
+            var imagePath = Path.Combine(_env.WebRootPath, imageName);
+
+            if (!System.IO.File.Exists(imagePath))
+            {
+                return GetDefaultImage();
+            }
+
+            var fileExtension = Path.GetExtension(imagePath).ToLower();
+            var mimeType = fileExtension switch
+            {
+                ".jpg" or ".jpeg" => "image/jpeg",
+                ".png" => "image/png",
+                ".gif" => "image/gif",
+                ".bmp" => "image/bmp",
+                _ => "image/jpeg"
+            };
+
+            return PhysicalFile(imagePath, mimeType);
+        }
+
+        // МЕТОД ДЛЯ АВАТАРА (оставьте как есть)
         public async Task<IActionResult> GetAvatar()
         {
             // Получаем email из claims
@@ -34,7 +64,6 @@ namespace LabUI.Controllers
 
             if (user.Avatar != null && user.Avatar.Length > 0)
             {
-                // Определяем MIME-тип на основе сигнатуры файла
                 var mimeType = GetImageMimeType(user.Avatar);
                 return File(user.Avatar, mimeType);
             }
@@ -42,12 +71,31 @@ namespace LabUI.Controllers
             return GetDefaultAvatar();
         }
 
+        private IActionResult GetDefaultImage()
+        {
+            var imagePath = Path.Combine(_env.WebRootPath, "images", "placeholder.jpg");
+            if (System.IO.File.Exists(imagePath))
+            {
+                return PhysicalFile(imagePath, "image/jpeg");
+            }
+            return NotFound("Image not found");
+        }
+
+        private IActionResult GetDefaultAvatar()
+        {
+            var imagePath = Path.Combine(_env.WebRootPath, "images", "123.jpg");
+            if (System.IO.File.Exists(imagePath))
+            {
+                return PhysicalFile(imagePath, "image/jpeg");
+            }
+            return NotFound("Default avatar image not found");
+        }
+
         private string GetImageMimeType(byte[] imageData)
         {
             if (imageData.Length < 4)
                 return "image/jpeg";
 
-            // Проверяем сигнатуры файлов для определения типа
             if (imageData[0] == 0xFF && imageData[1] == 0xD8 && imageData[2] == 0xFF)
                 return "image/jpeg";
 
@@ -60,31 +108,7 @@ namespace LabUI.Controllers
             if (imageData[0] == 0x42 && imageData[1] == 0x4D)
                 return "image/bmp";
 
-            // По умолчанию возвращаем jpeg
             return "image/jpeg";
-        }
-
-        private IActionResult GetDefaultAvatar()
-        {
-            var imagePath = Path.Combine(_env.WebRootPath, "images", "123.jpg");
-            if (System.IO.File.Exists(imagePath))
-            {
-                // Определяем MIME-тип для файла по умолчанию
-                var fileExtension = Path.GetExtension(imagePath).ToLower();
-                var mimeType = fileExtension switch
-                {
-                    ".jpg" or ".jpeg" => "image/jpeg",
-                    ".png" => "image/png",
-                    ".gif" => "image/gif",
-                    ".bmp" => "image/bmp",
-                    _ => "image/jpeg"
-                };
-
-                return PhysicalFile(imagePath, mimeType);
-            }
-
-            // Если файл по умолчанию не найден, возвращаем 404
-            return NotFound("Default avatar image not found");
         }
     }
 }
