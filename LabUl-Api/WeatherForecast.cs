@@ -1,4 +1,4 @@
-namespace LabUlApi
+namespace LabUl_Api
 {
     public class WeatherForecast
     {
