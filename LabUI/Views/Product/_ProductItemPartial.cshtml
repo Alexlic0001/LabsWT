@@ -8,11 +8,9 @@
 <div class="col-md-4 mb-4">
     <div class="card h-100">
         <!-- Используем ImageTagHelper -->
-        <img img-action="GetImage"
-             img-controller="Image"
-             image-name="@Model.Image"
-             class="card-img-top"
-             alt="@Model.Name"
+        <img class="card-img-top"
+             src="@Model.Image"
+             alt="@(string.IsNullOrEmpty(Model.Name) ? "No image available" : Model.Name)"
              style="height: 200px; object-fit: cover;" />
         
         <div class="card-body">

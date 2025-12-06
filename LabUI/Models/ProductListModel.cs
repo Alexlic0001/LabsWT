@@ -8,7 +8,6 @@
         public int CurrentPage { get; set; } = 1;
         // общее количество страниц 
         public int TotalPages { get; set; } = 1;
-        public int TotalCount { get; internal set; }
+        public int TotalCount { get; set; }  
     }
-
 }
