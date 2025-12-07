@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace LabUI.Areas.Admin.Pages.Dishes
 {
-    [Authorize(Policy = "admin")]
+    [Authorize(Roles = "admin")]
     public class EditModel : PageModel
     {
         private readonly IProductService _productService;
@@ -23,9 +23,9 @@ namespace LabUI.Areas.Admin.Pages.Dishes
         public Dish Dish { get; set; } = default!;
 
         [BindProperty]
-        public IFormFile? NewImage { get; set; }
+        public IFormFile? Image { get; set; }
 
-        public string? CurrentImageUrl { get; set; }
+        public SelectList? Categories { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
@@ -41,11 +41,9 @@ namespace LabUI.Areas.Admin.Pages.Dishes
             }
 
             Dish = response.Data;
-            CurrentImageUrl = Dish.Image;
 
-            // Загрузка категорий для SelectList
-            var categoryListData = await _categoryService.GetCategoryListAsync();
-            ViewData["CategoryId"] = new SelectList(categoryListData.Data, "Id", "Name", Dish.CategoryId);
+            // Загружаем категории
+            await LoadCategoriesAsync();
 
             return Page();
         }
@@ -54,25 +52,42 @@ namespace LabUI.Areas.Admin.Pages.Dishes
         {
             if (!ModelState.IsValid)
             {
-                // Перезагружаем категории если модель невалидна
-                var categoryListData = await _categoryService.GetCategoryListAsync();
-                ViewData["CategoryId"] = new SelectList(categoryListData.Data, "Id", "Name", Dish.CategoryId);
+                await LoadCategoriesAsync();
                 return Page();
             }
 
             try
             {
-                await _productService.UpdateProductAsync(Dish.Id, Dish, NewImage);
+                var updateResponse = await _productService.UpdateProductAsync(Dish.Id, Dish, Image);
+
+                if (!updateResponse.Success)
+                {
+                    ModelState.AddModelError(string.Empty, updateResponse.ErrorMessage ?? "Ошибка при обновлении");
+                    await LoadCategoriesAsync();
+                    return Page();
+                }
+
+                return RedirectToPage("./Index");
             }
             catch (Exception ex)
             {
-                ModelState.AddModelError(string.Empty, $"Ошибка при обновлении: {ex.Message}");
-                var categoryListData = await _categoryService.GetCategoryListAsync();
-                ViewData["CategoryId"] = new SelectList(categoryListData.Data, "Id", "Name", Dish.CategoryId);
+                ModelState.AddModelError(string.Empty, $"Ошибка: {ex.Message}");
+                await LoadCategoriesAsync();
                 return Page();
             }
+        }
 
-            return RedirectToPage("./Index");
+        private async Task LoadCategoriesAsync()
+        {
+            var categoriesResponse = await _categoryService.GetCategoryListAsync();
+            if (categoriesResponse.Success && categoriesResponse.Data != null)
+            {
+                Categories = new SelectList(categoriesResponse.Data, "Id", "Name", Dish?.CategoryId);
+            }
+            else
+            {
+                Categories = new SelectList(new List<Category>(), "Id", "Name");
+            }
         }
     }
 }

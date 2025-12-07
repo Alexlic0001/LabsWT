@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace LabUI.Areas.Admin.Pages.Dishes
 {
-    [Authorize(Policy = "admin")]
+    [Authorize(Roles = "admin")]
     public class CreateModel : PageModel
     {
         private readonly IProductService _productService;

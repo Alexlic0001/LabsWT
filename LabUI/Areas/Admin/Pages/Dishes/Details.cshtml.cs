@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace LabUI.Areas.Admin.Pages.Dishes
 {
-    [Authorize(Policy = "admin")]
+    [Authorize(Roles = "admin")]
     public class DetailsModel : PageModel
     {
         private readonly IProductService _productService;

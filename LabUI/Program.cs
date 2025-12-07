@@ -1,5 +1,6 @@
 using LabUI.Data;
 using LabUI.Services;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.EntityFrameworkCore;
@@ -27,6 +28,7 @@ builder.Services.AddHttpClient("ApiClient", client =>
 });
 
 // Регистрация API сервисов
+builder.Services.AddHttpClient<ApiProductService>();
 builder.Services.AddScoped<ICategoryService, ApiCategoryService>();
 builder.Services.AddScoped<IProductService, ApiProductService>();
 
@@ -38,6 +40,7 @@ builder.Services.AddDefaultIdentity<AppUser>(options =>
     options.Password.RequireLowercase = false;
     options.Password.RequireUppercase = false;
 })
+ .AddRoles<IdentityRole>()
 .AddEntityFrameworkStores<ApplicationDbContext>();
 
 builder.Services.ConfigureApplicationCookie(options =>
@@ -56,8 +59,8 @@ builder.Services.AddSingleton<IUrlHelperFactory, UrlHelperFactory>();
 
 builder.Services.AddAuthorization(opt =>
 {
-    opt.AddPolicy("admin", p =>
-    p.RequireClaim(ClaimTypes.Role, "admin"));
+    //  для проверки
+    opt.AddPolicy("admin", p => p.RequireRole("admin"));
 });
 
 builder.Services.AddSingleton<IEmailSender, NoOpEmailSender>();

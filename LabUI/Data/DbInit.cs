@@ -9,11 +9,19 @@ namespace LabUI.Data
         {
             using var scope = app.Services.CreateScope();
             var userManager = scope.ServiceProvider.GetRequiredService<UserManager<AppUser>>();
+            var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
             var logger = scope.ServiceProvider.GetRequiredService<ILogger<DbInit>>();
 
             try
             {
-                // Проверяем существование администратора
+                // 1. Создаем роль "admin" если ее нет
+                if (!await roleManager.RoleExistsAsync("admin"))
+                {
+                    await roleManager.CreateAsync(new IdentityRole("admin"));
+                    logger.LogInformation("Роль 'admin' создана.");
+                }
+
+                // 2. Проверяем существование администратора
                 var adminUser = await userManager.FindByEmailAsync("admin@gmail.com");
 
                 if (adminUser == null)
@@ -23,7 +31,7 @@ namespace LabUI.Data
                     // Создаем нового пользователя
                     var user = new AppUser
                     {
-                        UserName = "admin@gmail.com",
+                        UserName = "admin", // Важно: UserName без @gmail.com
                         Email = "admin@gmail.com",
                         EmailConfirmed = true
                     };
@@ -35,17 +43,17 @@ namespace LabUI.Data
                     {
                         logger.LogInformation("Пользователь admin создан успешно!");
 
-                        // Добавляем claim с ролью
-                        var claimResult = await userManager.AddClaimAsync(user, new Claim(ClaimTypes.Role, "admin"));
+                        // Добавляем пользователя в роль admin
+                        var addToRoleResult = await userManager.AddToRoleAsync(user, "admin");
 
-                        if (claimResult.Succeeded)
+                        if (addToRoleResult.Succeeded)
                         {
-                            logger.LogInformation("Claim 'role: admin' добавлен успешно!");
+                            logger.LogInformation("Пользователь добавлен в роль 'admin' успешно!");
                         }
                         else
                         {
-                            logger.LogError("Ошибка при добавлении claim:");
-                            foreach (var error in claimResult.Errors)
+                            logger.LogError("Ошибка при добавлении в роль:");
+                            foreach (var error in addToRoleResult.Errors)
                             {
                                 logger.LogError($" - {error.Description}");
                             }
@@ -64,25 +72,22 @@ namespace LabUI.Data
                 {
                     logger.LogInformation("Пользователь admin уже существует.");
 
-                    // Проверяем, есть ли уже claim с ролью admin
-                    var existingClaims = await userManager.GetClaimsAsync(adminUser);
-                    var adminClaim = existingClaims.FirstOrDefault(c =>
-                        c.Type == ClaimTypes.Role && c.Value == "admin");
+                    // Проверяем, находится ли пользователь в роли admin
+                    var isInRole = await userManager.IsInRoleAsync(adminUser, "admin");
 
-                    if (adminClaim == null)
+                    if (!isInRole)
                     {
-                        logger.LogInformation("Добавляем claim 'role: admin' существующему пользователю...");
-                        var claimResult = await userManager.AddClaimAsync(adminUser,
-                            new Claim(ClaimTypes.Role, "admin"));
+                        logger.LogInformation("Добавляем пользователя в роль 'admin'...");
+                        var addToRoleResult = await userManager.AddToRoleAsync(adminUser, "admin");
 
-                        if (claimResult.Succeeded)
+                        if (addToRoleResult.Succeeded)
                         {
-                            logger.LogInformation("Claim добавлен успешно!");
+                            logger.LogInformation("Пользователь добавлен в роль 'admin' успешно!");
                         }
                         else
                         {
-                            logger.LogError("Ошибка при добавлении claim:");
-                            foreach (var error in claimResult.Errors)
+                            logger.LogError("Ошибка при добавлении в роль:");
+                            foreach (var error in addToRoleResult.Errors)
                             {
                                 logger.LogError($" - {error.Description}");
                             }
@@ -90,7 +95,7 @@ namespace LabUI.Data
                     }
                     else
                     {
-                        logger.LogInformation("Claim 'role: admin' уже существует.");
+                        logger.LogInformation("Пользователь уже находится в роли 'admin'.");
                     }
                 }
             }

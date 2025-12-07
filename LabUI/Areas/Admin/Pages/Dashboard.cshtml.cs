@@ -3,8 +3,8 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace LabUI.Areas.Admin.Pages
 {
-    [Authorize(Policy = "admin")]
-    public class IndexModel : PageModel
+    [Authorize(Roles = "admin")]
+    public class DashboardModel : PageModel 
     {
         public void OnGet()
         {

@@ -1,5 +1,4 @@
 ﻿using LabUI.Models;
-using Microsoft.AspNetCore.Http;
 
 namespace LabUI.Services
 {
@@ -7,8 +6,8 @@ namespace LabUI.Services
     {
         Task<ResponseData<ListModel<Dish>>> GetProductListAsync(string? categoryNormalizedName, int pageNo = 1);
         Task<ResponseData<Dish>> GetProductByIdAsync(int id);
-        Task UpdateProductAsync(int id, Dish product, IFormFile? formFile);
-        Task DeleteProductAsync(int id);
+        Task<ResponseData<Dish>> UpdateProductAsync(int id, Dish product, IFormFile? formFile);
+        Task<ResponseData<bool>> DeleteProductAsync(int id);
         Task<ResponseData<Dish>> CreateProductAsync(Dish product, IFormFile? formFile);
     }
 }

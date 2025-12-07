@@ -15,6 +15,17 @@
                       .ToString()?
                       .ToLower()
                       ?? String.Empty;
+
+    // Проверяем, является ли пользователь администратором
+    bool isAdmin = false;
+    if (User.Identity?.IsAuthenticated == true)
+    {
+        var user = await UserManager.GetUserAsync(User);
+        if (user != null)
+        {
+            isAdmin = await UserManager.IsInRoleAsync(user, "admin");
+        }
+    }
 }
 
 <a class="navbar-brand" asp-controller="home" asp-action="index">WebLabs WT</a>
@@ -33,7 +44,7 @@
     </li>
 
     <!-- АДМИН-МЕНЮ (только для администраторов) -->
-    @if (User.Identity?.IsAuthenticated == true && User.IsInRole("admin"))
+    @if (User.Identity?.IsAuthenticated == true && isAdmin)
     {
         <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle @(area == "admin" ? "active" : "")"
@@ -57,22 +68,6 @@
                     <a class="dropdown-item @(page.Contains("/dishes/create") ? "active" : "")"
                        asp-area="Admin" asp-page="/Dishes/Create">
                         <i class="fa-solid fa-plus-circle me-2"></i>Добавить блюдо
-                    </a>
-                </li>
-                <li><hr class="dropdown-divider"></li>
-                <li>
-                    <h6 class="dropdown-header">
-                        <i class="fa-solid fa-chart-line"></i> Аналитика
-                    </h6>
-                </li>
-                <li>
-                    <a class="dropdown-item" href="#">
-                        <i class="fa-solid fa-chart-bar me-2"></i>Статистика
-                    </a>
-                </li>
-                <li>
-                    <a class="dropdown-item" href="#">
-                        <i class="fa-solid fa-file-invoice me-2"></i>Отчеты
                     </a>
                 </li>
                 <li><hr class="dropdown-divider"></li>
