@@ -15,16 +15,20 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlite(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-// Регистрация HttpClient для работы с API
-builder.Services.AddHttpClient();
+// УПРОЩЕННАЯ НАСТРОЙКА - удаляем AddRazorPagesOptions
+builder.Services.AddRazorPages();
+// УДАЛИТЬ весь блок AddRazorPagesOptions
 
-// Регистрация API сервисов (ЗАМЕНИТЬ Memory на Api)
+// Регистрация HttpClient для работы с API
+builder.Services.AddHttpClient("ApiClient", client =>
+{
+    client.BaseAddress = new Uri("https://localhost:7002/"); // URL вашего API проекта
+    client.DefaultRequestHeaders.Add("Accept", "application/json");
+});
+
+// Регистрация API сервисов
 builder.Services.AddScoped<ICategoryService, ApiCategoryService>();
 builder.Services.AddScoped<IProductService, ApiProductService>();
-
-// Удалить или закомментировать старые регистрации:
-// builder.Services.AddTransient<ICategoryService, MemoryCategoryService>();
-// builder.Services.AddSingleton<IUrlHelperFactory, UrlHelperFactory>();
 
 builder.Services.AddDefaultIdentity<AppUser>(options =>
 {
@@ -104,10 +108,16 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
+// УПРОЩЕННАЯ НАСТРОЙКА МАРШРУТОВ - только один способ
+app.MapRazorPages();
+app.MapControllers(); // Если используете API контроллеры
+
+app.MapControllerRoute(
+    name: "areas",
+    pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
-
-app.MapRazorPages();
 
 app.Run();

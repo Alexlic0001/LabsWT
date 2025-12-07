@@ -1,4 +1,8 @@
-﻿@{
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<AppUser> SignInManager
+@inject UserManager<AppUser> UserManager
+
+@{
     var controller = ViewContext.RouteData.Values["controller"]?
                        .ToString()?
                        .ToLower()
@@ -7,18 +11,99 @@
                         .ToString()?
                         .ToLower()
                         ?? String.Empty;
-
+    var page = ViewContext.RouteData.Values["page"]?
+                      .ToString()?
+                      .ToLower()
+                      ?? String.Empty;
 }
 
-<a class="navbar-brand" asp-controller="home" asp-action="index">WebLabsV06</a>
+<a class="navbar-brand" asp-controller="home" asp-action="index">WebLabs WT</a>
 <div class="navbar-nav me-auto mb-2 mb-lg-0">
     <li class="nav-item">
-        <a class="nav-link @(controller == "home" ? "active" : "")" asp-controller="home" asp-action="index">Лб 6</a>
+        <a class="nav-link @(controller == "home" ? "active" : "")"
+           asp-controller="home" asp-action="index">
+            <i class="fa-solid fa-home me-1"></i>Главная
+        </a>
     </li>
     <li class="nav-item">
-        <a class="nav-link @(controller == "product" ? "active" : "")" asp-controller="product" asp-action="index">Каталог</a>
+        <a class="nav-link @(controller == "product" ? "active" : "")"
+           asp-controller="product" asp-action="index">
+            <i class="fa-solid fa-utensils me-1"></i>Каталог
+        </a>
     </li>
-    <li class="nav-item">
-        <a class="nav-link @(area == "admin" ? "active" : "")" asp-area="admin" asp-page="/index">Администрирование</a>
-    </li>
+
+    <!-- АДМИН-МЕНЮ (только для администраторов) -->
+    @if (User.Identity?.IsAuthenticated == true && User.IsInRole("admin"))
+    {
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle @(area == "admin" ? "active" : "")"
+               href="#" id="adminDropdown"
+               role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="fa-solid fa-cogs me-1"></i>Администрирование
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="adminDropdown">
+                <li>
+                    <h6 class="dropdown-header">
+                        <i class="fa-solid fa-utensils"></i> Управление блюдами
+                    </h6>
+                </li>
+                <li>
+                    <a class="dropdown-item @(page.Contains("/dishes/index") ? "active" : "")"
+                       asp-area="Admin" asp-page="/Dishes/Index">
+                        <i class="fa-solid fa-list me-2"></i>Список блюд
+                    </a>
+                </li>
+                <li>
+                    <a class="dropdown-item @(page.Contains("/dishes/create") ? "active" : "")"
+                       asp-area="Admin" asp-page="/Dishes/Create">
+                        <i class="fa-solid fa-plus-circle me-2"></i>Добавить блюдо
+                    </a>
+                </li>
+                <li><hr class="dropdown-divider"></li>
+                <li>
+                    <h6 class="dropdown-header">
+                        <i class="fa-solid fa-chart-line"></i> Аналитика
+                    </h6>
+                </li>
+                <li>
+                    <a class="dropdown-item" href="#">
+                        <i class="fa-solid fa-chart-bar me-2"></i>Статистика
+                    </a>
+                </li>
+                <li>
+                    <a class="dropdown-item" href="#">
+                        <i class="fa-solid fa-file-invoice me-2"></i>Отчеты
+                    </a>
+                </li>
+                <li><hr class="dropdown-divider"></li>
+                <li>
+                    <a class="dropdown-item @(page == "/admin/index" ? "active" : "")"
+                       asp-area="Admin" asp-page="/Index">
+                        <i class="fa-solid fa-tachometer-alt me-2"></i>Дашборд
+                    </a>
+                </li>
+            </ul>
+        </li>
+    }
+    else if (User.Identity?.IsAuthenticated == true)
+    {
+        <!-- Для обычных пользователей показываем просто ссылку -->
+        <li class="nav-item">
+            <a class="nav-link @(area == "admin" ? "active" : "") disabled"
+               href="#" title="Требуются права администратора">
+                <i class="fa-solid fa-lock me-1"></i>Администрирование
+            </a>
+        </li>
+    }
+    else
+    {
+        <!-- Для неавторизованных пользователей -->
+        <li class="nav-item">
+            <a class="nav-link @(area == "admin" ? "active" : "")"
+               asp-area="Identity" asp-page="/Account/Login"
+               asp-route-returnUrl="@Context.Request.Path">
+                <i class="fa-solid fa-user-lock me-1"></i>Войти для администрирования
+            </a>
+        </li>
+    }
 </div>

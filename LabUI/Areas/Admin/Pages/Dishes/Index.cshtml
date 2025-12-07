@@ -1,0 +1,161 @@
+﻿@page
+@model LabUI.Areas.Admin.Pages.Dishes.IndexModel
+
+@{
+    ViewData["Title"] = "Управление блюдами";
+}
+
+<div class="container">
+    <h1><i class="fa-solid fa-utensils me-2"></i>Управление блюдами</h1>
+
+    <p>
+        <a asp-page="Create" class="btn btn-primary">
+            <i class="fa-solid fa-circle-plus me-2"></i>Добавить новое блюдо
+        </a>
+    </p>
+
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover table-striped">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>
+                                <i class="fa-solid fa-tag me-1"></i>
+                                @Html.DisplayNameFor(model => model.Dish[0].Name)
+                            </th>
+                            <th>
+                                <i class="fa-solid fa-file-lines me-1"></i>
+                                @Html.DisplayNameFor(model => model.Dish[0].Description)
+                            </th>
+                            <th>
+                                <i class="fa-solid fa-ruble-sign me-1"></i>
+                                @Html.DisplayNameFor(model => model.Dish[0].Price)
+                            </th>
+                            <th>
+                                <i class="fa-solid fa-image me-1"></i>
+                                Изображение
+                            </th>
+                            <th>
+                                <i class="fa-solid fa-gears me-1"></i>
+                                Действия
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.Dish != null && Model.Dish.Any())
+                        {
+                            @foreach (var item in Model.Dish)
+                            {
+                                <tr>
+                                    <td>
+                                        <strong>@Html.DisplayFor(modelItem => item.Name)</strong>
+                                    </td>
+                                    <td style="max-width: 300px;" class="text-truncate" title="@item.Description">
+                                        @Html.DisplayFor(modelItem => item.Description)
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-success fs-6">
+                                            @Html.DisplayFor(modelItem => item.Price) ₽
+                                        </span>
+                                    </td>
+                                    <td>
+                                        @if (!string.IsNullOrEmpty(item.Image))
+                                        {
+                                            <img src="@item.Image"
+                                                 alt="@item.Name"
+                                                 class="img-thumbnail"
+                                                 style="width: 100px; height: 100px; object-fit: cover;" />
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-secondary">Нет изображения</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm" role="group">
+                                            <a asp-page="./Edit" asp-route-id="@item.Id"
+                                               class="btn btn-warning" title="Редактировать">
+                                                <i class="fa-solid fa-pen-to-square"></i>
+                                            </a>
+                                            <a asp-page="./Details" asp-route-id="@item.Id"
+                                               class="btn btn-info mx-1" title="Подробнее">
+                                                <i class="fa-solid fa-circle-info"></i>
+                                            </a>
+                                            <a asp-page="./Delete" asp-route-id="@item.Id"
+                                               class="btn btn-danger" title="Удалить">
+                                                <i class="fa-solid fa-trash"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="5" class="text-center">
+                                    <div class="alert alert-info mt-3">
+                                        <i class="fa-solid fa-info-circle me-2"></i>
+                                        Нет доступных блюд
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Пагинация -->
+    @if (Model.TotalPages > 1)
+    {
+        <nav aria-label="Навигация по страницам" class="mt-4">
+            <ul class="pagination justify-content-center">
+                <li class="page-item @(Model.CurrentPage == 1 ? "disabled" : "")">
+                    <a class="page-link" asp-route-pageNo="@(Model.CurrentPage - 1)"
+                       aria-label="Предыдущая">
+                        <i class="fa-solid fa-chevron-left"></i>
+                    </a>
+                </li>
+
+                @for (int i = 1; i <= Model.TotalPages; i++)
+                {
+                    <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
+                        <a class="page-link" asp-route-pageNo="@i">@i</a>
+                    </li>
+                }
+
+                <li class="page-item @(Model.CurrentPage == Model.TotalPages ? "disabled" : "")">
+                    <a class="page-link" asp-route-pageNo="@(Model.CurrentPage + 1)"
+                       aria-label="Следующая">
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    }
+</div>
+
+@section Styles {
+    <style>
+        .table th {
+            background-color: #343a40;
+            color: white;
+        }
+
+        .table-hover tbody tr:hover {
+            background-color: rgba(0, 123, 255, 0.1);
+        }
+
+        .img-thumbnail {
+            transition: transform 0.2s;
+        }
+
+        .img-thumbnail:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 10px rgba(0,0,0,0.3);
+        }
+    </style>
+}
