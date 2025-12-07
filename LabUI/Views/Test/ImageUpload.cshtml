@@ -1,0 +1,21 @@
+﻿@{
+    ViewData["Title"] = "Тест загрузки изображения";
+}
+
+<h1>Тест загрузки изображения</h1>
+
+<form method="post" enctype="multipart/form-data">
+    <input type="number" name="dishId" value="@(ViewBag.DishId ?? 1)" />
+    <input type="file" name="imageFile" />
+    <button type="submit">Тест</button>
+</form>
+
+@if (ViewBag.Result != null)
+{
+    <pre>@ViewBag.Result</pre>
+}
+
+@if (ViewBag.Error != null)
+{
+    <div style="color: red;">@ViewBag.Error</div>
+}

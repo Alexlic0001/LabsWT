@@ -85,12 +85,15 @@ namespace LabUI.Services
 
             try
             {
-                _logger.LogInformation($"Обновление блюда ID: {id}");
+                Console.WriteLine($"[UPDATE] Начало обновления блюда ID: {id}");
+                Console.WriteLine($"[UPDATE] Данные блюда: Name={product.Name}, Price={product.Price}");
+                Console.WriteLine($"[UPDATE] Изображение предоставлено: {formFile != null}, Имя файла: {formFile?.FileName}");
 
-                // 1. Обновляем блюдо
+                // 1. Обновляем блюдо (базовые данные)
                 var json = JsonSerializer.Serialize(product, new JsonSerializerOptions
                 {
-                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                    WriteIndented = true
                 });
 
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
@@ -99,39 +102,60 @@ namespace LabUI.Services
                 if (!response.IsSuccessStatusCode)
                 {
                     var errorContent = await response.Content.ReadAsStringAsync();
-                    _logger.LogError($"Ошибка при обновлении блюда: {response.StatusCode}, {errorContent}");
+                    Console.WriteLine($"[UPDATE ERROR] Ошибка при обновлении блюда: {response.StatusCode}");
+                    Console.WriteLine($"[UPDATE ERROR] Ответ API: {errorContent}");
 
                     responseData.Success = false;
                     responseData.ErrorMessage = $"Ошибка при обновлении: {response.StatusCode}";
                     return responseData;
                 }
 
+                Console.WriteLine($"[UPDATE] Базовые данные блюда обновлены успешно");
+
                 // 2. Обновляем изображение, если оно есть
-                if (formFile != null)
+                if (formFile != null && formFile.Length > 0)
                 {
-                    _logger.LogInformation($"Обновление изображения для блюда ID: {id}");
+                    Console.WriteLine($"[UPDATE] Начало загрузки изображения: {formFile.FileName}, размер: {formFile.Length} байт");
 
                     var imageResult = await UpdateProductImageAsync(id, formFile);
-                    if (!imageResult)
+
+                    if (imageResult)
                     {
-                        _logger.LogWarning($"Не удалось обновить изображение для блюда ID: {id}");
-                        // Не прерываем операцию, только логируем
+                        Console.WriteLine($"[UPDATE] Изображение успешно обновлено");
                     }
+                    else
+                    {
+                        Console.WriteLine($"[UPDATE WARNING] Не удалось обновить изображение");
+                        // Не прерываем операцию, продолжаем без изображения
+                    }
+                }
+                else
+                {
+                    Console.WriteLine($"[UPDATE] Изображение не предоставлено для обновления");
                 }
 
                 // 3. Получаем обновленное блюдо для возврата
+                Console.WriteLine($"[UPDATE] Получение обновленного блюда...");
                 var updatedDishResponse = await GetProductByIdAsync(id);
-                if (updatedDishResponse.Success)
+
+                if (updatedDishResponse.Success && updatedDishResponse.Data != null)
                 {
                     responseData.Data = updatedDishResponse.Data;
+                    Console.WriteLine($"[UPDATE] Блюдо получено: {updatedDishResponse.Data.Name}, Image: {updatedDishResponse.Data.Image}");
+                }
+                else
+                {
+                    Console.WriteLine($"[UPDATE WARNING] Не удалось получить обновленное блюдо");
                 }
 
                 responseData.Success = true;
-                _logger.LogInformation($"Блюдо ID: {id} успешно обновлено");
+                Console.WriteLine($"[UPDATE] Обновление завершено успешно");
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Ошибка при обновлении блюда ID: {id}");
+                Console.WriteLine($"[UPDATE EXCEPTION] Ошибка: {ex.Message}");
+                Console.WriteLine($"[UPDATE EXCEPTION] StackTrace: {ex.StackTrace}");
+
                 responseData.Success = false;
                 responseData.ErrorMessage = ex.Message;
             }

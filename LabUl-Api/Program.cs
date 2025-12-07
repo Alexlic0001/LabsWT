@@ -7,6 +7,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
 // Добавление сервисов
 builder.Services.AddControllers()
     .AddNewtonsoftJson(); // Для работы с циклическими ссылками в моделях
@@ -17,7 +19,7 @@ builder.Services.AddControllers()
 
 var app = builder.Build();
 
-
+app.UseStaticFiles(); // Разрешает доступ к wwwroot
 
 app.UseHttpsRedirection();
 

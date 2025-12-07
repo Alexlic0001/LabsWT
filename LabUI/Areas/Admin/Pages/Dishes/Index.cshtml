@@ -62,10 +62,37 @@
                                     <td>
                                         @if (!string.IsNullOrEmpty(item.Image))
                                         {
-                                            <img src="@item.Image"
-                                                 alt="@item.Name"
-                                                 class="img-thumbnail"
-                                                 style="width: 100px; height: 100px; object-fit: cover;" />
+                                            <div>
+                                                <img src="@item.Image"
+                                                     alt="@item.Name"
+                                                     class="img-thumbnail"
+                                                     style="width: 100px; height: 100px; object-fit: cover;"
+                                                     onerror="this.onerror=null; this.src='https://via.placeholder.com/100?text=Ошибка+загрузки';" />
+                                                <!-- ДОБАВЬТЕ ЭТУ ОТЛАДОЧНУЮ ИНФОРМАЦИЮ -->
+                                                <div class="small text-muted mt-1" style="font-size: 10px; max-width: 100px; word-break: break-all;">
+                                                    <i class="fa-solid fa-link"></i>
+                                                    @{
+                                                        var imageUrl = item.Image;
+                                                        var isAbsolute = imageUrl.StartsWith("http");
+                                                    }
+                                                    @if (isAbsolute)
+                                                    {
+                                                        <span class="text-success" title="Абсолютный URL">
+                                                            <i class="fa-solid fa-check-circle"></i> Полный URL
+                                                        </span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span class="text-warning" title="Относительный URL">
+                                                            <i class="fa-solid fa-exclamation-triangle"></i> Относительный путь
+                                                        </span>
+                                                    }
+                                                    <br />
+                                                    <span title="@imageUrl">
+                                                        @(imageUrl.Length > 30 ? imageUrl.Substring(0, 30) + "..." : imageUrl)
+                                                    </span>
+                                                </div>
+                                            </div>
                                         }
                                         else
                                         {

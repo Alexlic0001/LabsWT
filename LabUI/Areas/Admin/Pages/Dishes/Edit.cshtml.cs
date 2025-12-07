@@ -12,11 +12,15 @@ namespace LabUI.Areas.Admin.Pages.Dishes
     {
         private readonly IProductService _productService;
         private readonly ICategoryService _categoryService;
+        private readonly ILogger<EditModel> _logger;
 
-        public EditModel(IProductService productService, ICategoryService categoryService)
+        public EditModel(IProductService productService,
+                        ICategoryService categoryService,
+                        ILogger<EditModel> logger)
         {
             _productService = productService;
             _categoryService = categoryService;
+            _logger = logger;
         }
 
         [BindProperty]
@@ -42,38 +46,61 @@ namespace LabUI.Areas.Admin.Pages.Dishes
 
             Dish = response.Data;
 
-            // Загружаем категории
             await LoadCategoriesAsync();
-
             return Page();
         }
 
         public async Task<IActionResult> OnPostAsync()
         {
+            _logger.LogInformation("=== НАЧАЛО OnPostAsync ===");
+            _logger.LogInformation($"ID блюда: {Dish?.Id}");
+            _logger.LogInformation($"Название: {Dish?.Name}");
+            _logger.LogInformation($"Изображение получено: {Image != null}");
+            _logger.LogInformation($"Имя файла: {Image?.FileName}");
+            _logger.LogInformation($"Размер файла: {Image?.Length} байт");
+
             if (!ModelState.IsValid)
             {
+                _logger.LogWarning("Модель невалидна");
+                foreach (var error in ModelState)
+                {
+                    _logger.LogWarning($"  {error.Key}: {string.Join(", ", error.Value.Errors.Select(e => e.ErrorMessage))}");
+                }
+
                 await LoadCategoriesAsync();
                 return Page();
             }
 
             try
             {
+                _logger.LogInformation("Вызов UpdateProductAsync...");
                 var updateResponse = await _productService.UpdateProductAsync(Dish.Id, Dish, Image);
+
+                _logger.LogInformation($"Результат UpdateProductAsync: Success={updateResponse.Success}");
+                _logger.LogInformation($"Ошибка: {updateResponse.ErrorMessage}");
+                _logger.LogInformation($"Данные: {updateResponse.Data?.Name}, Image URL: {updateResponse.Data?.Image}");
 
                 if (!updateResponse.Success)
                 {
-                    ModelState.AddModelError(string.Empty, updateResponse.ErrorMessage ?? "Ошибка при обновлении");
+                    _logger.LogError($"Ошибка при обновлении: {updateResponse.ErrorMessage}");
+                    ModelState.AddModelError(string.Empty, updateResponse.ErrorMessage ?? "Ошибка при обновлении блюда");
                     await LoadCategoriesAsync();
                     return Page();
                 }
 
+                _logger.LogInformation("Успешно сохранено, редирект на Index");
                 return RedirectToPage("./Index");
             }
             catch (Exception ex)
             {
-                ModelState.AddModelError(string.Empty, $"Ошибка: {ex.Message}");
+                _logger.LogError(ex, "Исключение в OnPostAsync");
+                ModelState.AddModelError(string.Empty, $"Ошибка при обновлении: {ex.Message}");
                 await LoadCategoriesAsync();
                 return Page();
+            }
+            finally
+            {
+                _logger.LogInformation("=== КОНЕЦ OnPostAsync ===");
             }
         }
 
