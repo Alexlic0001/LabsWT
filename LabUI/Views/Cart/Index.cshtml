@@ -1,0 +1,87 @@
+﻿@using LabUI.Models
+@model Dictionary<int, CartItem>
+
+@{
+    ViewData["Title"] = "Корзина";
+}
+
+<div class="container">
+    <h1>Корзина заказов</h1>
+
+    @if (Model.Count == 0)
+    {
+        <div class="alert alert-info mt-4">
+            <h4>Корзина пуста</h4>
+            <p>Добавьте блюда из каталога.</p>
+            <a asp-controller="Product" asp-action="Index" class="btn btn-primary">
+                <i class="fa-solid fa-utensils me-2"></i>Перейти в каталог
+            </a>
+        </div>
+    }
+    else
+    {
+        <div class="card mt-4">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">Ваш заказ</h4>
+            </div>
+            <div class="card-body">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Изображение</th>
+                            <th>Название</th>
+                            <th>Цена</th>
+                            <th>Количество</th>
+                            <th>Сумма</th>
+                            <th>Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    @if (!string.IsNullOrEmpty(item.Value.Item.Image))
+                                    {
+                                        <img src="@item.Value.Item.Image"
+                                             alt="@item.Value.Item.Name"
+                                             width="80" class="img-thumbnail" />
+                                    }
+                                </td>
+                                <td>@item.Value.Item.Name</td>
+                                <td>@item.Value.Item.Price.ToString("N2") ₽</td>
+                                <td>@item.Value.Qty</td>
+                                <td>@((item.Value.Item.Price * item.Value.Qty).ToString("N2")) ₽</td>
+                                <td>
+                                    <a asp-action="Remove"
+                                       asp-controller="Cart"
+                                       asp-route-id="@item.Value.Item.Id"
+                                       class="btn btn-danger btn-sm">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
+                <div class="row mt-4">
+                    <div class="col-md-6">
+                        <div class="alert alert-success">
+                            <h5>Итого: <strong>@Model.Sum(x => x.Value.Item.Price * x.Value.Qty).ToString("N2") ₽</strong></h5>
+                            <p class="mb-0">Количество позиций: @Model.Sum(x => x.Value.Qty)</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6 text-end">
+                        <a asp-action="Clear" asp-controller="Cart" class="btn btn-outline-danger">
+                            <i class="fa-solid fa-broom me-2"></i>Очистить корзину
+                        </a>
+                        <a href="#" class="btn btn-success ms-2">
+                            <i class="fa-solid fa-credit-card me-2"></i>Оформить заказ
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>

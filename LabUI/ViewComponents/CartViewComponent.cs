@@ -1,10 +1,15 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿
+using LabUI.Models;
+using Microsoft.AspNetCore.Mvc;
 
-namespace LabUI.ViewComponents
+namespace LabUI.Components
 {
-    public class CartViewComponent :ViewComponent
+    public class CartViewComponent : ViewComponent
     {
         public IViewComponentResult Invoke()
-        { return View();}
+        {
+            var cart = HttpContext.Session.Get<Cart>("cart");
+            return View(cart);
+        }
     }
 }
