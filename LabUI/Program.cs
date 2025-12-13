@@ -1,12 +1,23 @@
 using LabUI.Data;
+using LabUI.Middleware;
 using LabUI.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 using System.Security.Claims;
 
-var builder = WebApplication.CreateBuilder(args);
+
+Log.Logger = new LoggerConfiguration()
+    .WriteTo.Console()
+    .WriteTo.File("logs/log.txt", rollingInterval: RollingInterval.Day)
+    .CreateLogger();
+
+try
+{
+
+    var builder = WebApplication.CreateBuilder(args);
 
 // SQLite для Identity
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
@@ -119,6 +130,12 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+
+app.UseFileLogger(); // ←
+
+
+
+
 app.UseSession();
 
 app.UseAuthentication();
@@ -139,3 +156,14 @@ app.MapControllerRoute(
 app.MapRazorPages();
 
 app.Run();
+
+
+}
+catch (Exception ex)
+{
+    Log.Fatal(ex, "Application terminated unexpectedly");
+}
+finally
+{
+    Log.CloseAndFlush();
+}

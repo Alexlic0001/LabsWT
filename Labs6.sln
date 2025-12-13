@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lab.Domain", "Lab.Domain\La
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LabUl-Api", "LabUl-Api\LabUl-Api.csproj", "{B720EA4A-532A-47FE-8C2D-81939D19AFC7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LabUI.Tests", "LabUI.Tests\LabUI.Tests.csproj", "{D413CAAC-4A11-41CF-839C-C3B1DC2494F6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{B720EA4A-532A-47FE-8C2D-81939D19AFC7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B720EA4A-532A-47FE-8C2D-81939D19AFC7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B720EA4A-532A-47FE-8C2D-81939D19AFC7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D413CAAC-4A11-41CF-839C-C3B1DC2494F6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D413CAAC-4A11-41CF-839C-C3B1DC2494F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D413CAAC-4A11-41CF-839C-C3B1DC2494F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D413CAAC-4A11-41CF-839C-C3B1DC2494F6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using LabUI.Models;
 using Microsoft.AspNetCore.Mvc;
+using Serilog;
 
 namespace LabUI.Controllers
 {
@@ -15,8 +16,13 @@ namespace LabUI.Controllers
 
         public IActionResult Index()
         {
+            Log.Information("Hello из метода Index контроллера Home!");
+            return View();
+
             _logger.LogInformation($"------> {User.Identity.IsAuthenticated}");
             return View(_logger);
+
+            
         }
 
         public IActionResult Privacy()
