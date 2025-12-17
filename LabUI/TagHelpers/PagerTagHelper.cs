@@ -42,7 +42,7 @@ namespace LabUI.TagHelpers
             var ul = new TagBuilder("ul");
             ul.AddCssClass("pagination");
 
-            // Кнопка "Назад"
+            
             var prevLi = CreatePageItem(
                 PageCurrent == 1 ? 1 : PageCurrent - 1,
                 "<span aria-hidden=\"true\">&laquo;</span>",
@@ -50,14 +50,14 @@ namespace LabUI.TagHelpers
             );
             ul.InnerHtml.AppendHtml(prevLi);
 
-            // Кнопки с номерами страниц
+           
             for (int i = 1; i <= PageTotal; i++)
             {
                 var pageLi = CreatePageItem(i, i.ToString(), i == PageCurrent);
                 ul.InnerHtml.AppendHtml(pageLi);
             }
 
-            // Кнопка "Вперед"
+            
             var nextLi = CreatePageItem(
                 PageCurrent == PageTotal ? PageTotal : PageCurrent + 1,
                 "<span aria-hidden=\"true\">&raquo;</span>",
@@ -72,9 +72,9 @@ namespace LabUI.TagHelpers
         {
             var li = new TagBuilder("li");
             li.AddCssClass("page-item");
-            if (isDisabled && content.Length > 2) // Для стрелок
+            if (isDisabled && content.Length > 2) 
                 li.AddCssClass("disabled");
-            else if (pageNo == PageCurrent && content.Length <= 2) // Для номеров
+            else if (pageNo == PageCurrent && content.Length <= 2) 
                 li.AddCssClass("active");
 
             var a = new TagBuilder("a");

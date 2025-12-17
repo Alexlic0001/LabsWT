@@ -16,7 +16,7 @@ namespace LabUlApi.Controllers
             _context = context;
         }
 
-        // GET: api/Categories
+       
         [HttpGet]
         public async Task<ActionResult<ResponseData<IEnumerable<Category>>>> GetCategories()
         {
@@ -31,7 +31,6 @@ namespace LabUlApi.Controllers
             return response;
         }
 
-        // GET: api/Categories/5
         [HttpGet("{id}")]
         public async Task<ActionResult<ResponseData<Category>>> GetCategory(int id)
         {
@@ -53,7 +52,7 @@ namespace LabUlApi.Controllers
             };
         }
 
-        // PUT: api/Categories/5
+        
         [HttpPut("{id}")]
         public async Task<IActionResult> PutCategory(int id, Category category)
         {
@@ -91,7 +90,7 @@ namespace LabUlApi.Controllers
             return NoContent();
         }
 
-        // POST: api/Categories
+        
         [HttpPost]
         public async Task<ActionResult<ResponseData<Category>>> PostCategory(Category category)
         {
@@ -106,7 +105,7 @@ namespace LabUlApi.Controllers
                 });
         }
 
-        // DELETE: api/Categories/5
+      
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCategory(int id)
         {

@@ -1,0 +1,12 @@
+﻿@page "/testsimple"
+
+<h1>Простой тест</h1>
+
+<p>Если видите этот текст, страница загружается</p>
+
+@code {
+    protected override void OnInitialized()
+    {
+        Console.WriteLine("TestSimple: Компонент инициализирован");
+    }
+}

@@ -22,7 +22,7 @@ namespace LabUI.TagHelpers
 
         public string ImgAction { get; set; }
         public string ImgController { get; set; }
-        public string? ImageName { get; set; } // Добавьте это свойство
+        public string? ImageName { get; set; } 
 
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {

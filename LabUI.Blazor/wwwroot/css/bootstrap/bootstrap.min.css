@@ -1,0 +1,20 @@
+﻿/* Можно оставить пустым или добавить базовые стили */
+.table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.table-striped tbody tr:nth-child(odd) {
+    background-color: #f9f9f9;
+}
+
+.btn {
+    padding: 6px 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.btn-outline-dark {
+    color: #343a40;
+    border-color: #343a40;
+}

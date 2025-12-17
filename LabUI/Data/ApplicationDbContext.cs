@@ -14,7 +14,7 @@ namespace LabUI.Data
         {
             base.OnModelCreating(builder);
 
-            // Дополнительная конфигурация моделей, если нужна
+
         }
     }
 }

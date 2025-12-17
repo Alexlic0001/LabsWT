@@ -14,24 +14,24 @@ namespace LabUI.Data
 
             try
             {
-                // 1. Создаем роль "admin" если ее нет
+                
                 if (!await roleManager.RoleExistsAsync("admin"))
                 {
                     await roleManager.CreateAsync(new IdentityRole("admin"));
                     logger.LogInformation("Роль 'admin' создана.");
                 }
 
-                // 2. Проверяем существование администратора
+                
                 var adminUser = await userManager.FindByEmailAsync("admin@gmail.com");
 
                 if (adminUser == null)
                 {
                     logger.LogInformation("Создание пользователя admin...");
 
-                    // Создаем нового пользователя
+                   
                     var user = new AppUser
                     {
-                        UserName = "admin", // Важно: UserName без @gmail.com
+                        UserName = "admin", 
                         Email = "admin@gmail.com",
                         EmailConfirmed = true
                     };
@@ -72,7 +72,7 @@ namespace LabUI.Data
                 {
                     logger.LogInformation("Пользователь admin уже существует.");
 
-                    // Проверяем, находится ли пользователь в роли admin
+               
                     var isInRole = await userManager.IsInRoleAsync(adminUser, "admin");
 
                     if (!isInRole)

@@ -16,17 +16,17 @@ namespace LabUI.Tests
 
         public DishesControllerTests()
         {
-            // Используем InMemory базу данных
+            
             _contextOptions = new DbContextOptionsBuilder<AppDbContext>()
                 .UseInMemoryDatabase("TestDatabase")
                 .Options;
 
-            // Имитация IWebHostEnvironment
+            
             _environment = Substitute.For<IWebHostEnvironment>();
             _environment.WebRootPath.Returns("wwwroot");
             _environment.ContentRootPath.Returns(Directory.GetCurrentDirectory());
 
-            // Заполняем базу тестовыми данными
+          
             using var context = new AppDbContext(_contextOptions);
             SeedDatabase(context);
         }
@@ -50,11 +50,11 @@ namespace LabUI.Tests
         }
 
         [Theory]
-        [InlineData(2, 3)] // 5 блюд, размер страницы 2 → 3 страницы
-        [InlineData(3, 2)] // 5 блюд, размер страницы 3 → 2 страницы
+        [InlineData(2, 3)] 
+        [InlineData(3, 2)] 
         public async Task ControllerReturnsCorrectPagesCount(int pageSize, int expectedPages)
         {
-            // Arrange
+            
             using var context = new AppDbContext(_contextOptions);
             var controller = new DishesController(context, _environment);
 
@@ -70,11 +70,11 @@ namespace LabUI.Tests
         [Fact]
         public async Task ControllerReturnsCorrectPage()
         {
-            // Arrange
+           
             using var context = new AppDbContext(_contextOptions);
             var controller = new DishesController(context, _environment);
 
-            // Act
+            
             var response = await controller.GetDishes(null, 2, 3);
             var responseData = response.Value;
             var dishesList = responseData!.Data!.Items;
@@ -90,7 +90,7 @@ namespace LabUI.Tests
             context.Database.EnsureDeleted();
             context.Database.EnsureCreated();
 
-            // Добавляем категории
+            
             var categories = new[]
             {
                 new Category { Name = "Супы", NormalizedName = "soups" },
@@ -100,7 +100,6 @@ namespace LabUI.Tests
             context.Categories.AddRange(categories);
             context.SaveChanges();
 
-            // Добавляем блюда
             var dishes = new List<Dish>
             {
                 new() { Name = "Суп-харчо", Description = "Острый суп", Price = 300, CategoryId = categories[0].Id },

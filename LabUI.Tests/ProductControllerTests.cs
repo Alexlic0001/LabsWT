@@ -20,13 +20,13 @@ namespace LabUI.Tests
         [Fact]
         public async Task IndexPutsCategoriesToViewData()
         {
-            // Arrange
+            
             var controller = new ProductController(_productService, _categoryService);
 
-            // Act
+            
             var response = await controller.Index(null);
 
-            // Assert
+         
             var view = Assert.IsType<ViewResult>(response);
             var categories = Assert.IsType<List<Category>>(view.ViewData["categories"]);
             Assert.Equal(3, categories.Count);
@@ -36,15 +36,15 @@ namespace LabUI.Tests
         [Fact]
         public async Task IndexSetsCorrectCurrentCategory()
         {
-            // Arrange
+            
             var categories = await _categoryService.GetCategoryListAsync();
             var currentCategory = categories.Data![0];
             var controller = new ProductController(_productService, _categoryService);
 
-            // Act
+           
             var response = await controller.Index(currentCategory.NormalizedName);
 
-            // Assert
+           
             var view = Assert.IsType<ViewResult>(response);
             Assert.Equal(currentCategory.Name, view.ViewData["currentCategory"]);
         }
@@ -52,7 +52,7 @@ namespace LabUI.Tests
         [Fact]
         public async Task IndexReturnsNotFound()
         {
-            // Arrange
+            
             string errorMessage = "Test error";
             var categoriesResponse = new ResponseData<List<Category>>
             {
@@ -63,17 +63,17 @@ namespace LabUI.Tests
             _categoryService.GetCategoryListAsync().Returns(Task.FromResult(categoriesResponse));
             var controller = new ProductController(_productService, _categoryService);
 
-            // Act
+           
             var response = await controller.Index(null);
 
-            // Assert
+           
             var result = Assert.IsType<NotFoundObjectResult>(response);
             Assert.Equal(errorMessage, result.Value);
         }
 
         private void SetupData()
         {
-            // Настройка имитации ICategoryService
+            
             _categoryService = Substitute.For<ICategoryService>();
             var categoriesResponse = new ResponseData<List<Category>>
             {
@@ -88,7 +88,7 @@ namespace LabUI.Tests
 
             _categoryService.GetCategoryListAsync().Returns(Task.FromResult(categoriesResponse));
 
-            // Настройка имитации IProductService
+            
             _productService = Substitute.For<IProductService>();
             var dishesResponse = new ResponseData<ListModel<Dish>>
             {

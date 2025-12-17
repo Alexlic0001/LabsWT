@@ -110,7 +110,7 @@
     }
 
     <script>
-        // Предпросмотр изображения
+   
         document.getElementById('imageInput').addEventListener('change', function(e) {
             const file = e.target.files[0];
             const preview = document.getElementById('imagePreview');
@@ -124,8 +124,8 @@
                 };
                 reader.readAsDataURL(file);
 
-                // Валидация размера файла
-                const maxSize = 5 * 1024 * 1024; // 5MB
+                
+                const maxSize = 5 * 1024 * 1024; // 
                 if (file.size > maxSize) {
                     alert('Файл слишком большой. Максимальный размер: 5MB');
                     this.value = '';
@@ -136,7 +136,7 @@
             }
         });
 
-        // Ограничение длины описания
+        
         document.getElementById('Dish_Description').addEventListener('input', function(e) {
             const maxLength = 500;
             if (this.value.length > maxLength) {

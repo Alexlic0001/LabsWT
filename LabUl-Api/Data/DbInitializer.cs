@@ -10,16 +10,16 @@ namespace LabUlApi.Data
             using var scope = app.Services.CreateScope();
             var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-            // Выполнить миграции (создать БД если её нет)
+            
             await context.Database.MigrateAsync();
 
-            // URL API проекта (для формирования путей к изображениям)
+           
             var apiUri = "https://localhost:7002/"; // Порт из launchSettings.json
 
-            // Проверяем, есть ли уже данные в БД
+            
             if (!context.Categories.Any() && !context.Dishes.Any())
             {
-                // Добавляем категории
+                
                 var categories = new List<Category>
                 {
                     new Category { Name = "Стартеры", NormalizedName = "starters" },
@@ -32,10 +32,10 @@ namespace LabUlApi.Data
                 await context.Categories.AddRangeAsync(categories);
                 await context.SaveChangesAsync();
 
-                // Обновляем список категорий с Id из БД
+                
                 var savedCategories = await context.Categories.ToListAsync();
 
-                // Добавляем блюда
+               
                 var dishes = new List<Dish>
                 {
                     new Dish

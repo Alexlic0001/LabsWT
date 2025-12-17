@@ -15,7 +15,7 @@
                     </h3>
                 </div>
                 <div class="card-body">
-                    <!-- ДОБАВЬТЕ ЭТУ ОТЛАДОЧНУЮ ИНФОРМАЦИЮ -->
+                   
                     <div class="alert alert-info mb-3" id="debugInfo">
                         <div><strong>Отладка:</strong></div>
                         <div>ID блюда: <span id="debugId">@Model.Dish.Id</span></div>
@@ -109,7 +109,7 @@
                                     <div class="form-text">
                                         Оставьте пустым, чтобы сохранить текущее изображение
                                     </div>
-                                    <!-- ДОБАВЬТЕ ЭТОТ БЛОК ДЛЯ ОТЛАДКИ -->
+                                  
                                     <div id="fileInfo" class="text-muted small mt-1"></div>
                                 </div>
                             </div>
@@ -138,7 +138,7 @@
     }
 
     <script>
-        // Отладка: показываем информацию о выбранном файле
+        
         document.getElementById('imageInput').addEventListener('change', function(e) {
             const file = e.target.files[0];
             const fileInfo = document.getElementById('fileInfo');
@@ -171,7 +171,7 @@
             }
         });
 
-        // Отладка: логируем отправку формы
+        
         document.getElementById('editForm').addEventListener('submit', function(e) {
             const fileInput = document.getElementById('imageInput');
             const file = fileInput.files[0];
@@ -182,7 +182,7 @@
             console.log('Название:', document.getElementById('dishName').value);
             console.log('Цена:', document.getElementById('dishPrice').value);
 
-            // Показываем все данные формы
+            
             console.log('Данные FormData:');
             for (let [key, value] of formData.entries()) {
                 if (key === 'Image' && value instanceof File) {
@@ -195,14 +195,12 @@
             console.log('Файл в форме:', file ? `"${file.name}" (${file.size} байт)` : 'нет');
             console.log('=== КОНЕЦ ОТПРАВКИ ФОРМЫ ===');
 
-            // Можно временно добавить задержку для просмотра логов
-            // e.preventDefault();
-            // setTimeout(() => this.submit(), 1000);
+         
         });
 
-        // Отладка: кнопка для тестирования
+        
         document.addEventListener('DOMContentLoaded', function() {
-            // Добавляем тестовую кнопку для отладки
+            
             const debugBtn = document.createElement('button');
             debugBtn.type = 'button';
             debugBtn.className = 'btn btn-outline-info btn-sm ms-2';
@@ -214,23 +212,23 @@
             function testFormSubmission() {
                 console.log('=== ТЕСТОВАЯ ОТПРАВКА ===');
 
-                // Создаем тестовый файл
+                
                 const testFile = new File(['test image content'], 'test-image.jpg', {
                     type: 'image/jpeg',
                     lastModified: Date.now()
                 });
 
-                // Устанавливаем файл в input
+              
                 const dataTransfer = new DataTransfer();
                 dataTransfer.items.add(testFile);
                 document.getElementById('imageInput').files = dataTransfer.files;
 
-                // Триггерим change событие
+               
                 document.getElementById('imageInput').dispatchEvent(new Event('change'));
 
                 console.log('Тестовый файл установлен:', testFile.name);
 
-                // Авто-отправка через 1 секунду
+               
                 setTimeout(() => {
                     console.log('Автоматическая отправка формы...');
                     document.getElementById('editForm').submit();

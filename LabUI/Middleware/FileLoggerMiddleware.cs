@@ -17,7 +17,7 @@ namespace LabUI.Middleware
 
             var code = httpContext.Response.StatusCode;
             var temp = code / 100;
-            if (temp != 2) // если код не 2XX
+            if (temp != 2) // 
             {
                 Log.Information($"---> Request {httpContext.Request.Path} returns {code}");
             }

@@ -16,12 +16,12 @@ namespace LabUI.Controllers
             _env = env;
         }
 
-        // ДОБАВЬТЕ ЭТОТ МЕТОД ДЛЯ ТЕГ-ХЕЛПЕРА
+       
         public IActionResult GetImage(string? imageName)
         {
             if (string.IsNullOrEmpty(imageName))
             {
-                // Возвращаем изображение по умолчанию
+               
                 return GetDefaultImage();
             }
 
@@ -45,10 +45,10 @@ namespace LabUI.Controllers
             return PhysicalFile(imagePath, mimeType);
         }
 
-        // МЕТОД ДЛЯ АВАТАРА (оставьте как есть)
+     
         public async Task<IActionResult> GetAvatar()
         {
-            // Получаем email из claims
+          
             var userEmail = User.FindFirst(ClaimTypes.Email)?.Value ?? User.Identity?.Name;
 
             if (string.IsNullOrEmpty(userEmail))

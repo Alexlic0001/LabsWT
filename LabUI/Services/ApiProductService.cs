@@ -18,7 +18,7 @@ namespace LabUI.Services
             _logger = logger;
         }
 
-        // Метод должен соответствовать интерфейсу: GetProductListAsync(string?, int)
+   
         public async Task<ResponseData<ListModel<Dish>>> GetProductListAsync(
             string? categoryNormalizedName,
             int pageNo = 1)
@@ -89,7 +89,7 @@ namespace LabUI.Services
                 Console.WriteLine($"[UPDATE] Данные блюда: Name={product.Name}, Price={product.Price}");
                 Console.WriteLine($"[UPDATE] Изображение предоставлено: {formFile != null}, Имя файла: {formFile?.FileName}");
 
-                // 1. Обновляем блюдо (базовые данные)
+               
                 var json = JsonSerializer.Serialize(product, new JsonSerializerOptions
                 {
                     PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
@@ -112,7 +112,6 @@ namespace LabUI.Services
 
                 Console.WriteLine($"[UPDATE] Базовые данные блюда обновлены успешно");
 
-                // 2. Обновляем изображение, если оно есть
                 if (formFile != null && formFile.Length > 0)
                 {
                     Console.WriteLine($"[UPDATE] Начало загрузки изображения: {formFile.FileName}, размер: {formFile.Length} байт");
@@ -126,7 +125,7 @@ namespace LabUI.Services
                     else
                     {
                         Console.WriteLine($"[UPDATE WARNING] Не удалось обновить изображение");
-                        // Не прерываем операцию, продолжаем без изображения
+                       
                     }
                 }
                 else
@@ -134,7 +133,7 @@ namespace LabUI.Services
                     Console.WriteLine($"[UPDATE] Изображение не предоставлено для обновления");
                 }
 
-                // 3. Получаем обновленное блюдо для возврата
+               
                 Console.WriteLine($"[UPDATE] Получение обновленного блюда...");
                 var updatedDishResponse = await GetProductByIdAsync(id);
 
@@ -216,7 +215,7 @@ namespace LabUI.Services
 
             try
             {
-                // 1. Создаем блюдо
+                
                 var json = JsonSerializer.Serialize(product, new JsonSerializerOptions
                 {
                     PropertyNamingPolicy = JsonNamingPolicy.CamelCase
@@ -235,18 +234,18 @@ namespace LabUI.Services
                     return responseData;
                 }
 
-                // 2. Получаем созданное блюдо
+                
                 var createdDish = await response.Content.ReadFromJsonAsync<Dish>();
                 if (createdDish != null)
                 {
                     responseData.Data = createdDish;
 
-                    // 3. Добавляем изображение, если оно есть
+                    
                     if (formFile != null)
                     {
                         await UpdateProductImageAsync(createdDish.Id, formFile);
 
-                        // Обновляем блюдо с новым URL изображения
+                        
                         var updatedDish = await GetProductByIdAsync(createdDish.Id);
                         if (updatedDish.Success)
                         {

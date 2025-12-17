@@ -1,0 +1,50 @@
+﻿@page "/products"
+@rendermode InteractiveServer
+@using LabUI.Models
+
+<CascadingValue Value="ProductService">
+    <DishesList DishSelected="ShowDetails" />
+    <Pager />
+</CascadingValue>
+<DishDetails Dish="SelectedDish" />
+
+@code {
+    [Inject] 
+    private IProductService<Dish> ProductService { get; set; }
+    
+    private Dish SelectedDish { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            Console.WriteLine("=== Products.OnInitializedAsync НАЧАЛО ===");
+            Console.WriteLine($"ProductService is null: {ProductService == null}");
+            
+            if (ProductService == null)
+            {
+                Console.WriteLine("ERROR: ProductService не инжектирован!");
+                return;
+            }
+            
+            Console.WriteLine("Вызываю GetProducts...");
+            await ProductService.GetProducts();
+            Console.WriteLine("GetProducts завершен");
+            Console.WriteLine($"Получено блюд: {ProductService.Products?.Count() ?? 0}");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"EXCEPTION in OnInitializedAsync: {ex.Message}");
+            Console.WriteLine($"StackTrace: {ex.StackTrace}");
+        }
+        finally
+        {
+            Console.WriteLine("=== Products.OnInitializedAsync КОНЕЦ ===");
+        }
+    }      
+    
+    private void ShowDetails(int id)
+    {
+        SelectedDish = ProductService.Products.First(d => d.Id == id);
+    }     
+}

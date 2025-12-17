@@ -15,8 +15,8 @@ namespace LabUI.Controllers
             _categoryService = categoryService;
         }
 
-        [Route("")] // Маршрут: /Catalog
-        [Route("{category?}")] // Маршрут: /Catalog/{category}
+        [Route("")] // 
+        [Route("{category?}")] // 
         public async Task<IActionResult> Index(string? category, int pageNo = 1)
         {
             var categoriesResponse = await _categoryService.GetCategoryListAsync();
@@ -37,7 +37,7 @@ namespace LabUI.Controllers
             return View(productResponse.Data);
         }
 
-        [Route("Details/{id:int}")] // Маршрут: /Catalog/Details/{id}
+        [Route("Details/{id:int}")] 
         public async Task<IActionResult> Details(int id)
         {
             var productResponse = await _productService.GetProductByIdAsync(id);

@@ -1,6 +1,6 @@
 using LabUlApi.Data;
 using Microsoft.EntityFrameworkCore;
-// using LabUlApi.Data; // Раскомментируйте после создания AppDbContext
+// using LabUlApi.Data; 
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,24 +9,19 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
-// Добавление сервисов
+
 builder.Services.AddControllers()
-    .AddNewtonsoftJson(); // Для работы с циклическими ссылками в моделях
-
-
-
+    .AddNewtonsoftJson(); 
 
 
 var app = builder.Build();
 
-app.UseStaticFiles(); // Разрешает доступ к wwwroot
+app.UseStaticFiles(); 
 
 app.UseHttpsRedirection();
 
-// Добавьте для обслуживания статических файлов (изображений)
-app.UseStaticFiles();
 
-// Разрешить CORS для доступа из UI проекта (если нужно)
+app.UseStaticFiles();
 app.UseCors(policy => policy
     .AllowAnyOrigin()
     .AllowAnyMethod()

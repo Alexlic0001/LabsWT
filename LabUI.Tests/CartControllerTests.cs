@@ -43,14 +43,14 @@ namespace LabUI.Tests
 
             _productService.GetProductByIdAsync(1).Returns(Task.FromResult(response));
 
-            // Act
+            
             var result = await _controller.Add(1, "/Product");
 
-            // Assert
+           
             var redirect = Assert.IsType<RedirectResult>(result);
             Assert.Equal("/Product", redirect.Url);
 
-            // Используем Get<T>() вместо GetSession<T>()
+            
             var cart = _httpContext.Session.Get<Cart>("cart");
             Assert.NotNull(cart);
             Assert.Equal(1, cart.Count);
@@ -60,7 +60,7 @@ namespace LabUI.Tests
         [Fact]
         public void Remove_RemovesItemFromCart()
         {
-            // Arrange
+            
             var cart = new Cart();
             cart.AddToCart(new Dish { Id = 1, Name = "Тест", Price = 100 });
             // Используем Set<T>() вместо SetSession()
@@ -78,7 +78,7 @@ namespace LabUI.Tests
             Assert.False(updatedCart!.CartItems.ContainsKey(1));
         }
 
-        // Тестовая реализация сессии для тестов
+       
         private class TestSession : ISession
         {
             private readonly Dictionary<string, byte[]> _store = new();

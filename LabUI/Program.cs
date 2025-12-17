@@ -27,14 +27,14 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlite(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-// УПРОЩЕННАЯ НАСТРОЙКА - удаляем AddRazorPagesOptions
-builder.Services.AddRazorPages();
-// УДАЛИТЬ весь блок AddRazorPagesOptions
 
-// Регистрация HttpClient для работы с API
+builder.Services.AddRazorPages();
+
+
+
 builder.Services.AddHttpClient("ApiClient", client =>
 {
-    client.BaseAddress = new Uri("https://localhost:7002/"); // URL вашего API проекта
+    client.BaseAddress = new Uri("https://localhost:7002/"); 
     client.DefaultRequestHeaders.Add("Accept", "application/json");
 });
 
@@ -46,7 +46,7 @@ builder.Services.AddLogging(logging =>
     logging.SetMinimumLevel(LogLevel.Debug);
 });
 
-// Регистрация API сервисов
+
 builder.Services.AddHttpClient<ApiProductService>();
 builder.Services.AddScoped<ICategoryService, ApiCategoryService>();
 builder.Services.AddScoped<IProductService, ApiProductService>();
@@ -75,13 +75,13 @@ builder.Services.AddSession();
 
 builder.Services.AddControllersWithViews();
 
-// Для Tag Helpers (если используются)
+
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddSingleton<IUrlHelperFactory, UrlHelperFactory>();
 
 builder.Services.AddAuthorization(opt =>
 {
-    //  для проверки
+  
     opt.AddPolicy("admin", p => p.RequireRole("admin"));
 });
 
@@ -104,7 +104,7 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
-// Инициализация базы данных Identity
+
 try
 {
     await DbInit.SeedData(app);
@@ -114,7 +114,7 @@ catch (Exception ex)
     Console.WriteLine($"Ошибка при инициализации базы данных: {ex.Message}");
 }
 
-// Configure the HTTP request pipeline.
+
 if (app.Environment.IsDevelopment())
 {
     app.UseMigrationsEndPoint();
@@ -141,9 +141,9 @@ app.UseSession();
 app.UseAuthentication();
 app.UseAuthorization();
 
-// УПРОЩЕННАЯ НАСТРОЙКА МАРШРУТОВ - только один способ
+
 app.MapRazorPages();
-app.MapControllers(); // Если используете API контроллеры
+app.MapControllers(); 
 
 app.MapControllerRoute(
     name: "areas",
