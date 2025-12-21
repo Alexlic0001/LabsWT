@@ -1,0 +1,32 @@
+﻿@page "/products"
+@rendermode InteractiveServer
+@using LabUI.Models
+@using LabUI.Blazor2.Services
+@inject IProductService<Dish> ProductService
+
+<PageTitle>Блюда</PageTitle>
+
+<CascadingValue Value="ProductService">
+    <DishesList DishSelected="ShowDetails" />
+    <div class="mt-3">
+        <Pager />
+    </div>
+</CascadingValue>
+
+<div class="mt-5">
+    <DishDetails Dish="@selectedDish" />
+</div>
+
+@code {
+    private Dish selectedDish;
+    
+    protected override async Task OnInitializedAsync()
+    {
+        await ProductService.GetProducts();
+    }
+    
+    private void ShowDetails(int id)
+    {
+        selectedDish = ProductService.Products.FirstOrDefault(d => d.Id == id);
+    }
+}

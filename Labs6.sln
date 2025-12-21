@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LabUI.Tests", "LabUI.Tests\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LabUI.Blazor", "LabUI.Blazor\LabUI.Blazor.csproj", "{78C9DA04-31C5-451A-9A1A-569502FD7AFD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LabUI.Blazor2", "LabUI.Blazor2\LabUI.Blazor2.csproj", "{747618B5-A76F-40D8-94B4-3B5AD0F2B0E4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{78C9DA04-31C5-451A-9A1A-569502FD7AFD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{78C9DA04-31C5-451A-9A1A-569502FD7AFD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{78C9DA04-31C5-451A-9A1A-569502FD7AFD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{747618B5-A76F-40D8-94B4-3B5AD0F2B0E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{747618B5-A76F-40D8-94B4-3B5AD0F2B0E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{747618B5-A76F-40D8-94B4-3B5AD0F2B0E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{747618B5-A76F-40D8-94B4-3B5AD0F2B0E4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
